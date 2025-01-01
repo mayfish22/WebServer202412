@@ -15,10 +15,10 @@ namespace WebServer.Services
     // 用於驗證用戶註冊資料的服務類別
     public class ValidatorService
     {
-        // AIoTDBContext 實例，用於與資料庫進行交互
+        // WebServerDBContext 實例，用於與資料庫進行交互
         private readonly WebServerDBContext _webServerDB;
 
-        // 建構函數，注入 AIoTDBContext 實例
+        // 建構函數，注入 WebServerDBContext 實例
         public ValidatorService(WebServerDBContext webServerDB)
         {
             _webServerDB = webServerDB;
