@@ -1,6 +1,8 @@
+using Coravel;
 using Microsoft.EntityFrameworkCore;
 using WebServer.Models.WebServerDB;
 using WebServer.Services;
+using WebServer.Services.Invocables;
 
 namespace WebServer;
 
@@ -52,6 +54,24 @@ public class Program
                 // 設定登出後的轉跳頁面
                 options.LogoutPath = new PathString("/Account/Signout");
             });
+
+        // 註冊 HttpClient 服務，允許在應用程序中使用 HttpClient 進行 HTTP 請求
+        builder.Services.AddHttpClient();
+
+        // 註冊 IHttpContextAccessor 服務，這樣可以在應用程序中訪問 HttpContext
+        // HttpContext 提供有關當前 HTTP 請求的資訊
+        builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
+        // 註冊 Coravel 的 Queue 服務，這樣可以在應用程序中使用任務排隊功能
+        builder.Services.AddQueue();
+
+        // 註冊 Invocable
+        builder.Services.AddTransient<LINEWebhookInvocable>();
+
+        // 註冊自訂服務
+        builder.Services.AddScoped<LINEAPIService>();
+        builder.Services.AddScoped<SiteService>();
+        builder.Services.AddScoped<GeminiAPIService>();
 
         var app = builder.Build();
 

@@ -1,8 +1,45 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    // 找出仍在追隨的
+    var lineUsers = (from n1 in _siteService.GetLINEUsers()
+                     where !n1.UnfollowDT.HasValue || (n1.FollowDT.HasValue && n1.FollowDT.Value > n1.UnfollowDT.Value)
+                     orderby n1.DisplaName
+                     select new SelectListItem { Value = n1.ID, Text = n1.DisplaName }).ToList();
 }
+<div class="row">
+    <div class="col-3"> </div>
+    <div class="card col-6">
+        <h5 class="card-header">發送訊息</h5>
+        <div class="card-body demo-vertical-spacing demo-only-element">
+            <div class="input-group input-group-merge">
+                <label class="form-label">LINE User</label>
+                <div class="input-group input-group-merge">
+                    <select id="UserID" class="form-control" asp-items="lineUsers"></select>
+                </div>
+            </div>
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+            <div class="input-group input-group-merge">
+                <span class="input-group-text">Message</span>
+                <input type="text" id="Message" class="form-control" placeholder="請輸入要發送的訊息" />
+            </div>
+
+            <div class="input-group input-group-merge">
+                <button class="btn btn-danger" id="btnSendMessage">送出</button>
+            </div>
+        </div>
+    </div>
 </div>
+
+@section Scripts{
+    <script>
+        $(async ()=>{
+            $('#btnSendMessage').on('click', async function(e){
+                const data = {
+                    userId : $("#UserID").val(),
+                    message : $("#Message").val(),
+                };
+                await fetch(`/Home/SendMessage`, { method:'post', headers: { 'content-type': 'application/json' }, body : JSON.stringify(data) });
+                $("#Message").val('');
+            });
+        });
+    </script>
+}

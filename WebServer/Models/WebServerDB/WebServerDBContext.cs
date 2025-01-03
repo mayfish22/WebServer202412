@@ -13,11 +13,24 @@ public partial class WebServerDBContext : DbContext
     {
     }
 
+    public virtual DbSet<LINEUser> LINEUser { get; set; }
+
     public virtual DbSet<User> User { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.UseCollation("Chinese_Taiwan_Stroke_CI_AS");
+
+        modelBuilder.Entity<LINEUser>(entity =>
+        {
+            entity.Property(e => e.ID).HasMaxLength(50);
+            entity.Property(e => e.DisplaName).HasMaxLength(200);
+            entity.Property(e => e.FollowDT).HasColumnType("datetime");
+            entity.Property(e => e.Language).HasMaxLength(20);
+            entity.Property(e => e.PictureUrl).HasMaxLength(500);
+            entity.Property(e => e.StatusMessage).HasMaxLength(500);
+            entity.Property(e => e.UnfollowDT).HasColumnType("datetime");
+        });
 
         modelBuilder.Entity<User>(entity =>
         {
