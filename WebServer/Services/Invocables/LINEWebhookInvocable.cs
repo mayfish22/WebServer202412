@@ -45,13 +45,13 @@ public class LINEWebhookInvocable : IInvocable, IInvocableWithPayload<Webhook>
             switch (eventType)
             {
                 case nameof(EventType.message):
-                    var geminiResult = await _geminiAPIService.GetResult(lineWebhookEvent.Message?.Text);
+                    var geminiResult = await _geminiAPIService.GetResult($"你是一個智能客服，回覆不要提及你是誰，若有人問說回答【智能客服】，然後接下來使用者提問的問題，太過敏感的問題就說【這個問題我不了解!】。以下是使用者的問題：{lineWebhookEvent.Message?.Text}");
                     // 當事件類型為消息時，回覆用戶消息
                     await _lineAPIService.ReplyMessage(lineWebhookEvent.ReplyToken, new object[]
                     {
                         new {
                             type = "text", // 設置消息類型為文本
-                            text = geminiResult, // 改用 Gemini 回覆
+                            text = geminiResult , // 改用 Gemini 回覆
                             notificationDisabled = false, // 設置通知為啟用
                         }
                     });
