@@ -21,6 +21,8 @@ public partial class User
 
     public string Name { get; set; }
 
+    public Guid? AvatarID { get; set; }
+
     public string Mobile { get; set; }
 
     public DateOnly? Birthday { get; set; }

@@ -177,6 +177,7 @@ public class UserController : Controller
                 EmailNormalize = model.Email.Trim().ToUpper(), // 正規化電子郵件（轉為大寫）
                 PasswordHash = AccountController.EncoderSHA512(model.Birthday.Value.ToString("yyyyMMdd")), // 使用生日生成密碼
                 Name = model.Name.Trim(), // 用戶姓名，去除前後空格
+                AvatarID = model.AvatarID,
                 Mobile = model.Mobile.Trim(), // 用戶手機號碼，去除前後空格
                 Birthday = model.Birthday, // 用戶生日
                 CreatedDT = DateTime.Now, // 設置創建日期為當前時間
@@ -248,6 +249,7 @@ public class UserController : Controller
             user.Email = model.Email.Trim(); // 去除電子郵件前後空格
             user.EmailNormalize = model.Email.Trim().ToUpper(); // 正規化電子郵件為大寫
             user.Name = model.Name.Trim(); // 去除姓名前後空格
+            user.AvatarID = model.AvatarID;
             user.Mobile = model.Mobile.Trim(); // 去除手機號碼前後空格
             user.Birthday = model.Birthday; // 設置生日
             user.ModifiedDT = DateTime.Now; // 設置修改時間為當前時間
@@ -331,6 +333,7 @@ public class UserController : Controller
                 Account = user.Account, // 設置用戶帳號
                 Email = user.Email, // 設置用戶電子郵件
                 Name = user.Name, // 設置用戶姓名
+                AvatarID = user.AvatarID, // 頭像
                 Mobile = user.Mobile, // 設置用戶手機號碼
                 Birthday = user.Birthday, // 設置用戶生日
                 IsReadonly = isReadonly, // 設置是否為只讀模式

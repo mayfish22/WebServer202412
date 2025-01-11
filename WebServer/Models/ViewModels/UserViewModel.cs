@@ -27,6 +27,8 @@ public class UserViewModel : IValidatableObject
     [Display(Name = "生日")]
     [Required(ErrorMessage = "生日必填")] // 必填驗證
     public DateOnly? Birthday { get; set; }
+    [Display(Name = "頭像")]
+    public Guid? AvatarID { get; set; }
 
     /// <summary>
     /// 自定義驗證邏輯

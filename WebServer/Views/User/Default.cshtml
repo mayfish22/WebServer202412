@@ -100,6 +100,23 @@
                                         <span asp-validation-for="Birthday" class="text-danger"></span>
                                     </div>
                                 </div>
+                                <div class="form-group row mt-4">
+                                    <label asp-for="AvatarID" class="control-label col-md-2 text-end"></label>
+                                    <div class="col-md-8">
+                                        @if (Model.IsReadonly)
+                                        {
+                                            <input disabled type="file" asp-for="AvatarID" class="form-control" data-id="@(Model.AvatarID)" />
+                                        }
+                                        else
+                                        {
+                                            <input type="file" asp-for="AvatarID" class="form-control" data-id="@(Model.AvatarID)" />
+                                        }
+                                    </div>
+                                    <div class="col-md-2">
+                                        <span asp-validation-for="AvatarID" class="text-danger"></span>
+                                    </div>
+                                </div>
+
                                 <div class="d-flex justify-content-center mt-5 mb-5">
                                     @if (@action == "Detail")
                                     {
@@ -128,9 +145,169 @@
 
 
 @section Scripts {
-    <script>
-        $(async()=> {
+    <script type="module">
+        // 載入多國語系
+        import FilePond_lang from '/lib/filepond/locale/zh-tw.js'; // 引入繁體中文語言包
 
+        // 使用 jQuery 的 $ 函數來確保 DOM 完全加載後執行
+        $(() => {
+            // 註冊 FilePond 插件
+            FilePond.registerPlugin(FilePondPluginFileValidateType); // 文件類型驗證插件
+            FilePond.registerPlugin(FilePondPluginImagePreview); // 圖像預覽插件
+            FilePond.registerPlugin(FilePondPluginFileMetadata); // 文件元數據插件
+            FilePond.registerPlugin(FilePondPluginGetFile); // 獲取文件插件
+            FilePond.registerPlugin(FilePondPluginMoveFile); // 移動文件插件
+            FilePond.registerPlugin(FilePondPluginMediaPreview); // 媒體預覽插件
+            FilePond.registerPlugin(FilePondPluginPdfPreview); // PDF 預覽插件
+
+            // 設置 FilePond 的選項，使用繁體中文語言包
+            FilePond.setOptions(FilePond_lang);
         });
+
+        // 當 DOM 完全加載後，使用 jQuery 的 $ 函數執行
+        $(async () => {
+            const $inputFile = $('input[type="file"]');
+
+            //初始化數據
+            let files = [];
+            if ($inputFile.attr('data-id').length > 0) {
+                files.push({
+                    source: `${$inputFile.attr('data-id')}`,
+                    options: {
+                        type: 'local'
+                    }
+                });
+            }
+            //Create FilePond
+            //參數 https://pqina.nl/filepond/docs/api/instance/properties/
+            const pond = FilePond.create($inputFile[0], {
+                credits: true,
+                disabled: false,
+                allowMultiple: false,
+                acceptedFileTypes: null,
+                fileValidateTypeLabelExpectedTypesMap: null,
+                allowPdfPreview: true,
+                pdfPreviewHeight: 320,
+                pdfComponentExtraParams: 'toolbar=0&view=fit&page=1',
+                files: files,
+                server:
+                {
+                    //上傳
+                    process: (fieldName, file, metadata, load, error, progress, abort, transfer, options) => {
+                        // fieldName is the name of the input field
+                        // file is the actual file object to send
+                        const formData = new FormData();
+                        formData.append(fieldName, file, file.name);
+                        //formData.append('message', 'FilePond');// 對應/Streaming/Upload,  不然不需要此行
+
+                        const request = new XMLHttpRequest();
+                        request.open('POST', '/Streaming/Upload');
+
+                        // Should call the progress method to update the progress to 100% before calling load
+                        // Setting computable to false switches the loading indicator to infinite mode
+                        request.upload.onprogress = (e) => {
+                            progress(e.lengthComputable, e.loaded, e.total);
+                        };
+
+                        // Should call the load method when done and pass the returned server file id
+                        // this server file id is then used later on when reverting or restoring a file
+                        // so your server knows which file to return without exposing that info to the client
+                        request.onload = function () {
+                            if (request.status >= 200 && request.status < 300) {
+                                // the load method accepts either a string (id) or an object
+                                load(JSON.parse(request.responseText).ids[0]);
+                            }
+                            else {
+                                // Can call the error method if something is wrong, should exit after
+                                error('oh no');
+                            }
+                        };
+
+                        request.send(formData);
+
+                        // Should expose an abort method so the request can be cancelled
+                        return {
+                            abort: () => {
+                                // This function is entered if the user has tapped the cancel button
+                                request.abort();
+
+                                // Let FilePond know the request has been cancelled
+                                abort();
+                            }
+                        };
+                    },
+                    //下載
+                    load: async (source, load, error, progress, abort, headers) => {
+                        // Should request a file object from the server here
+                        const file = await (async (source) => {
+                            try {
+                                const settings = {
+                                    headers: {
+                                        'user-agent': navigator.userAgent,
+                                        'content-type': 'application/json'
+                                    },
+                                    method: 'GET'
+                                };
+                                const fetchResponse = await fetch(`/Streaming/Download/${source}`, settings);
+                                const blob = await fetchResponse.blob();
+                                //解析檔名
+                                let filename;
+                                const disposition = decodeURIComponent(fetchResponse.headers.get('content-disposition'));
+                                if (disposition && disposition.match(/attachment/)) {
+                                    filename = disposition.replace(/^.*filename\*=UTF-8[\u0027][\u0027](.+)$/, '$1')
+                                    filename = filename && filename !== '' ? filename : 'file';
+                                }
+                                return blobToFile(blob, filename);
+                            } catch (e) {
+                                return e;
+                            }
+                        })(source);
+                        // Can call the error method if something is wrong, should exit after
+                        error('oh my goodness');
+
+                        // Can call the header method to supply FilePond with early response header string
+                        // https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/getAllResponseHeaders
+                        //headers(headersString);
+
+                        // Should call the progress method to update the progress to 100% before calling load
+                        // (endlessMode, loadedSize, totalSize)
+                        progress(true, 1024, 1024);
+
+                        // Should call the load method with a file object or blob when done
+                        load(file);
+                        //重設畫面上顯示的檔名
+                        for (let i = 0; i < $('.filepond--file-info-main').length; i++) {
+                            if ($('.filepond--file-info-main').eq(i)[0].innerHTML.indexOf(source) >= 0) {
+                                $('.filepond--file-info-main').eq(i)[0].innerHTML = $('.filepond--file-info-main').eq(i)[0].innerHTML.replace(source, file.name);
+                                break;
+                            }
+                        }
+                        // Should expose an abort method so the request can be cancelled
+                        return {
+                            abort: () => {
+                                // User tapped cancel, abort our ongoing actions here
+
+                                // Let FilePond know the request has been cancelled
+                                abort();
+                            }
+                        };
+                    }
+                },
+                beforeAddFile: (data) => {
+                    return true;
+                },
+                labelFileProcessingError: (error) => {
+                    let data = JSON.parse(error.body);
+                    return data.File;
+                }
+            });
+        });
+        function blobToFile(theBlob, fileName) {
+            //A Blob() is almost a File() - it's just missing the two properties below which we will add
+            theBlob.lastModifiedDate = new Date();
+            theBlob.name = fileName;
+            //return theBlob;
+            return new File([theBlob], fileName, { type: theBlob.type });
+        }
     </script>
 }
