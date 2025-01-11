@@ -13,6 +13,8 @@ public partial class WebServerDBContext : DbContext
     {
     }
 
+    public virtual DbSet<FileStorage> FileStorage { get; set; }
+
     public virtual DbSet<LINEUser> LINEUser { get; set; }
 
     public virtual DbSet<User> User { get; set; }
@@ -20,6 +22,23 @@ public partial class WebServerDBContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.UseCollation("Chinese_Taiwan_Stroke_CI_AS");
+
+        modelBuilder.Entity<FileStorage>(entity =>
+        {
+            entity.HasKey(e => e.ID).HasName("PK__FileStor__3214EC279A12C385");
+
+            entity.Property(e => e.ID).ValueGeneratedNever();
+            entity.Property(e => e.CreatedDT).HasColumnType("datetime");
+            entity.Property(e => e.Name)
+                .IsRequired()
+                .HasMaxLength(200);
+            entity.Property(e => e.Path)
+                .IsRequired()
+                .HasMaxLength(400);
+            entity.Property(e => e.Type)
+                .IsRequired()
+                .HasMaxLength(50);
+        });
 
         modelBuilder.Entity<LINEUser>(entity =>
         {

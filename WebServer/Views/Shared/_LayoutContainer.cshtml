@@ -55,6 +55,17 @@
     <!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
     <script src="/assets/js/config.js"></script>
 
+    <link rel="stylesheet" href="/lib/datatables.net-bs5/datatables.bootstrap5.css" asp-append-version="true" />
+
+    <link rel="stylesheet" href="/lib/filepond/filepond.css" asp-append-version="true" />
+    <link rel="stylesheet" href="/lib/filepond/plugin/filepond-plugin-get-file/filepond-plugin-get-file.css" asp-append-version="true" />
+    <link rel="stylesheet" href="/lib/filepond/plugin/filepond-plugin-image-overlay/filepond-plugin-image-overlay.css" asp-append-version="true" />
+    <link rel="stylesheet" href="/lib/filepond/plugin/filepond-plugin-get-file/filepond-plugin-get-file.css" asp-append-version="true" />
+    <link rel="stylesheet" href="/lib/filepond/plugin/filepond-plugin-image-preview/filepond-plugin-image-preview.css" asp-append-version="true" />
+    <link rel="stylesheet" href="/lib/filepond/plugin/filepond-plugin-media-preview/filepond-plugin-media-preview.css" asp-append-version="true" />
+    <link rel="stylesheet" href="/lib/filepond/plugin/filepond-plugin-move-file/filepond-plugin-move-file.css" asp-append-version="true" />
+    <link rel="stylesheet" href="/lib/filepond/plugin/filepond-plugin-pdf-preview/filepond-plugin-pdf-preview.css" asp-append-version="true" />
+
     @await RenderSectionAsync("Styles", required: false)
 </head>
 
@@ -477,63 +488,8 @@
                             </li>
 
                             <!-- User -->
-                            <li class="nav-item navbar-dropdown dropdown-user dropdown">
-                                <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
-                                    <div class="avatar avatar-online">
-                                        <img src="/assets/img/avatars/1.png" alt class="w-px-40 h-auto rounded-circle" />
-                                    </div>
-                                </a>
-                                <ul class="dropdown-menu dropdown-menu-end">
-                                    <li>
-                                        <a class="dropdown-item" href="#">
-                                            <div class="d-flex">
-                                                <div class="flex-shrink-0 me-3">
-                                                    <div class="avatar avatar-online">
-                                                        <img src="/assets/img/avatars/1.png" alt class="w-px-40 h-auto rounded-circle" />
-                                                    </div>
-                                                </div>
-                                                <div class="flex-grow-1">
-                                                    <span class="fw-semibold d-block">John Doe</span>
-                                                    <small class="text-muted">Admin</small>
-                                                </div>
-                                            </div>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <div class="dropdown-divider"></div>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item" href="#">
-                                            <i class="bx bx-user me-2"></i>
-                                            <span class="align-middle">My Profile</span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item" href="#">
-                                            <i class="bx bx-cog me-2"></i>
-                                            <span class="align-middle">Settings</span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item" href="#">
-                                            <span class="d-flex align-items-center align-middle">
-                                                <i class="flex-shrink-0 bx bx-credit-card me-2"></i>
-                                                <span class="flex-grow-1 align-middle">Billing</span>
-                                                <span class="flex-shrink-0 badge badge-center rounded-pill bg-danger w-px-20 h-px-20">4</span>
-                                            </span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <div class="dropdown-divider"></div>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item" href="/Account/Signout">
-                                            <i class="bx bx-power-off me-2"></i>
-                                            <span class="align-middle">Signout</span>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </li>
+                            @* @await Component.InvokeAsync("UserProfile") *@
+                            <vc:user-profile></vc:user-profile>
                             <!--/ User -->
                         </ul>
                     </div>
@@ -608,6 +564,20 @@
     <!-- Page JS -->
     <!-- Place this tag in your head or just before your close body tag. -->
     <script async defer src="https://buttons.github.io/buttons.js"></script>
+
+    <script src="/lib/datatables.net/datatables.js" asp-append-version="true"></script>
+    <script src="/lib/datatables.net-bs5/datatables.bootstrap5.js" asp-append-version="true"></script>
+    <script src="/lib/moment.js/moment.js" asp-append-version="true"></script>
+
+    <script src="/lib/filepond/filepond.js" asp-append-version="true"></script>
+    <script src="/lib/filepond/plugin/filepond-plugin-file-metadata/filepond-plugin-file-metadata.js" asp-append-version="true"></script>
+    <script src="/lib/filepond/plugin/filepond-plugin-file-validate-type/filepond-plugin-file-validate-type.js" asp-append-version="true"></script>
+    <script src="/lib/filepond/plugin/filepond-plugin-get-file/filepond-plugin-get-file.js" asp-append-version="true"></script>
+    <script src="/lib/filepond/plugin/filepond-plugin-image-overlay/filepond-plugin-image-overlay.js" asp-append-version="true"></script>
+    <script src="/lib/filepond/plugin/filepond-plugin-image-preview/filepond-plugin-image-preview.js" asp-append-version="true"></script>
+    <script src="/lib/filepond/plugin/filepond-plugin-media-preview/filepond-plugin-media-preview.js" asp-append-version="true"></script>
+    <script src="/lib/filepond/plugin/filepond-plugin-move-file/filepond-plugin-move-file.js" asp-append-version="true"></script>
+    <script src="/lib/filepond/plugin/filepond-plugin-pdf-preview/filepond-plugin-pdf-preview.js" asp-append-version="true"></script>
 
     @await RenderSectionAsync("Scripts", required: false)
 </body>

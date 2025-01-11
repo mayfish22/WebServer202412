@@ -15,6 +15,10 @@
    "T4TemplatePath": null,
    "Tables": [
       {
+         "Name": "[dbo].[FileStorage]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[LINEUser]",
          "ObjectType": 0
       },
