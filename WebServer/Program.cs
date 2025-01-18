@@ -6,6 +6,8 @@ using WebServer.Services.Invocables;
 using Serilog;
 using Serilog.Events;
 using Serilog.Sinks.MSSqlServer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace WebServer;
 public class Program
@@ -130,6 +132,36 @@ public class Program
 
                     // 設定登出後的轉跳頁面
                     options.LogoutPath = new PathString("/Account/Signout");
+                })
+                .AddJwtBearer(options =>
+                {
+                    // 設定 Token 驗證參數
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        // 設定時間偏移，預設為 5 分鐘，這裡設為 0，表示不允許時間偏移
+                        ClockSkew = TimeSpan.Zero,
+
+                        // 設定用於獲取用戶名稱的聲明類型，這裡使用 "sub" 聲明
+                        NameClaimType = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier",
+
+                        // 設定用於獲取用戶角色的聲明類型，這裡使用 "roles" 聲明
+                        RoleClaimType = "http://schemas.microsoft.com/ws/2008/06/identity/claims/role",
+
+                        // 驗證發行者的設定
+                        ValidateIssuer = true, // 啟用發行者驗證
+                        ValidIssuer = builder.Configuration.GetValue<string>("JwtSettings:Issuer"), // 從配置中獲取有效的發行者
+
+                        // 驗證受眾的設定
+                        ValidateAudience = true, // 啟用受眾驗證
+                        ValidAudience = builder.Configuration.GetValue<string>("JwtSettings:Audience"), // 從配置中獲取有效的受眾
+
+                        // 驗證 Token 的有效期間
+                        ValidateLifetime = true, // 啟用有效期間驗證
+
+                        // 驗證簽名的設定
+                        ValidateIssuerSigningKey = true, // 啟用簽名金鑰驗證
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration.GetValue<string>("JwtSettings:SignKey"))) // 從配置中獲取簽名金鑰
+                    };
                 });
 
             // 註冊 HttpClient 服務，允許在應用程序中使用 HttpClient 進行 HTTP 請求

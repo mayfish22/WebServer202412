@@ -20,4 +20,6 @@ public partial class LINEUser
     public DateTime? FollowDT { get; set; }
 
     public DateTime? UnfollowDT { get; set; }
+
+    public virtual ICollection<LINEUserMapping> LINEUserMapping { get; set; } = new List<LINEUserMapping>();
 }

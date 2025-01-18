@@ -17,6 +17,8 @@ public partial class WebServerDBContext : DbContext
 
     public virtual DbSet<LINEUser> LINEUser { get; set; }
 
+    public virtual DbSet<LINEUserMapping> LINEUserMapping { get; set; }
+
     public virtual DbSet<Product> Product { get; set; }
 
     public virtual DbSet<ProductImage> ProductImage { get; set; }
@@ -53,6 +55,30 @@ public partial class WebServerDBContext : DbContext
             entity.Property(e => e.PictureUrl).HasMaxLength(500);
             entity.Property(e => e.StatusMessage).HasMaxLength(500);
             entity.Property(e => e.UnfollowDT).HasColumnType("datetime");
+        });
+
+        modelBuilder.Entity<LINEUserMapping>(entity =>
+        {
+            entity.HasKey(e => e.ID).HasName("PK__LINEUser__3214EC2716D2EE52");
+
+            entity.HasIndex(e => new { e.LINEUserID, e.UserID }, "UQ_LINEUserID_UserID").IsUnique();
+
+            entity.Property(e => e.ID).ValueGeneratedNever();
+            entity.Property(e => e.CreatedDT).HasColumnType("datetime");
+            entity.Property(e => e.LINEUserID)
+                .IsRequired()
+                .HasMaxLength(50);
+            entity.Property(e => e.ModifiedDT).HasColumnType("datetime");
+
+            entity.HasOne(d => d.LINEUser).WithMany(p => p.LINEUserMapping)
+                .HasForeignKey(d => d.LINEUserID)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__LINEUserM__LINEU__1DB06A4F");
+
+            entity.HasOne(d => d.User).WithMany(p => p.LINEUserMapping)
+                .HasForeignKey(d => d.UserID)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__LINEUserM__UserI__1CBC4616");
         });
 
         modelBuilder.Entity<Product>(entity =>

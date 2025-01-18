@@ -38,4 +38,6 @@ public partial class User
     public DateTime CreatedDT { get; set; }
 
     public DateTime? ModifiedDT { get; set; }
+
+    public virtual ICollection<LINEUserMapping> LINEUserMapping { get; set; } = new List<LINEUserMapping>();
 }

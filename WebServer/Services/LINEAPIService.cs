@@ -28,6 +28,8 @@ public class LINEAPIService
     // 私有只讀變數，用於存儲回覆消息的 API URL
     private readonly string _urlReplyMessage = @"https://api.line.me/v2/bot/message/reply";
 
+    private readonly string _urlProfileByLINELogin = @"https://api.line.me/v2/profile";
+
     // 構造函數，接收 WebServerDBContext、IHttpClientFactory 和 IConfiguration 的實例
     public LINEAPIService(WebServerDBContext webServerDB, IHttpClientFactory httpClient, IConfiguration configuration)
     {
@@ -290,4 +292,40 @@ public class LINEAPIService
         // 如果發生異常，返回 MessageStatus.error
         return MessageStatus.error;
     }
+
+    #region GetProfileByLINELogin
+    public async Task<Profile?> GetProfileByLINELogin(string accessToken)
+    {
+        try
+        {
+            Profile? profile = null; // 用於存儲從 LINE API 獲取的用戶資料
+                                     // 創建一個 HTTP 請求，使用 GET 方法請求用戶資料的 URL
+            var request = new HttpRequestMessage(HttpMethod.Get, _urlProfileByLINELogin);
+
+            // 在請求標頭中添加授權信息，使用 Bearer 令牌
+            request.Headers.Add("Authorization", $"Bearer {accessToken}");
+
+            var client = _httpClient.CreateClient(); // 創建 HTTP 客戶端
+            var response = await client.SendAsync(request); // 發送請求並獲取響應
+
+            // 讀取響應內容流
+            var stream = await response.Content.ReadAsStreamAsync();
+            using var reader = new StreamReader(stream);
+            var responseValue = await reader.ReadToEndAsync(); // 讀取響應內容
+
+            // 檢查響應是否成功
+            if (response.IsSuccessStatusCode)
+            {
+                // 如果響應成功，將響應內容反序列化為 Profile 對象
+                profile = JsonSerializer.Deserialize<Profile>(responseValue);
+            }
+            return profile; // 返回用戶資料
+        }
+        catch (Exception e)
+        {
+            // 捕獲異常並重新拋出
+            throw e;
+        }
+    }
+    #endregion
 }

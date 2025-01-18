@@ -1,5 +1,7 @@
 ﻿@using WebServer
 @using WebServer.Models
+@using Microsoft.Extensions.Configuration;
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 @addTagHelper *, WebServer
 @inject WebServer.Services.SiteService _siteService
+@inject IConfiguration _configuration

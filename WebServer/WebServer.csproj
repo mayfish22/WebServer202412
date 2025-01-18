@@ -7,11 +7,21 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Controllers\LIFFAPIController.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="Views\LIFF\EC.cshtml" />
+    <Content Remove="Views\LIFF\Register.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Include="efpt.config.json.user" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Coravel" Version="6.0.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.12" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="8.0.11" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.11" />
     <PackageReference Include="Serilog" Version="4.2.0" />

@@ -1,0 +1,72 @@
+﻿@{
+    Layout = "_LayoutWithoutMenu";
+    var liffID = _configuration.GetValue<string>("LINE:LINELogin:LIFFID");
+}
+
+@section Styles {
+
+}
+
+<div class="main">
+    <div class="col" align="center">
+        <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+        <span class="sr-only"> 歡迎光臨 </span>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+    <script>
+        $(async () => {
+            // 定義 LIFF ID，這是您在 LINE Developers 控制台中創建的 LIFF 應用的 ID
+            var liffID = '@liffID'; 
+
+            // 初始化 LIFF SDK，傳入 liffId
+            liff.init({
+                liffId: liffID // 設定 LIFF ID
+            }).then(async function() {
+                // LIFF 初始化成功後執行的代碼
+
+                // 構建一個消息字符串，包含各種 LIFF 相關的資訊
+                let msg = `語言：${liff.getLanguage()}`; // 獲取並顯示用戶的語言
+                msg += `\nSDK版本：${liff.getVersion()}`; // 獲取並顯示 LIFF SDK 的版本
+                msg += `\n作業系統：${liff.getOS()}`; // 獲取並顯示用戶的作業系統
+                msg += `\n是否登入 LINE 帳號：${liff.isLoggedIn()}`; // 檢查用戶是否已登入 LINE 帳號
+                msg += `\n否由 LINE App 存取：${liff.isInClient()}`; // 檢查應用是否在 LINE 客戶端中運行
+                msg += `\nLINE 版本：${liff.getLineVersion()}`; // 獲取並顯示 LINE 應用的版本
+
+                // 顯示上述資訊
+                console.log(msg); // 將訊息輸出到控制台
+
+                // 檢查用戶是否已登入 LINE 帳號
+                if (!liff.isLoggedIn()) {
+                    liff.login(); // 如果未登入，則調用登入方法
+                }
+                else {
+                    // 如果已登入，獲取訪問令牌
+                    const accessToken = liff.getAccessToken(); // 獲取用戶的訪問令牌
+                    console.log("getAccessToken", accessToken); // 將訪問令牌輸出到控制台
+
+                    // 設定請求的配置
+                    const settings = {
+                        headers: {
+                            'user-agent': navigator.userAgent, // 設定用戶代理
+                            'content-type': 'application/json' // 設定內容類型為 JSON
+                        },
+                        method: 'Post', // 設定請求方法為 POST
+                        body: JSON.stringify({ accessToken: accessToken }) // 將訪問令牌作為 JSON 字符串發送
+                    };
+
+                    // 發送請求到後端以獲取用戶資料
+                    const fetchResponse = await fetch(`/LIFF/GetProfile`, settings); // 發送請求到指定的 URL
+                    const result = await fetchResponse.json(); // 解析回應為 JSON 格式
+                    console.log(result); // 將結果輸出到控制台
+                }
+            }).catch(function(error) {
+                // 如果初始化失敗，則捕獲錯誤並在控制台中顯示
+                console.log(error); // 將錯誤輸出到控制台
+            });
+        });
+    </script>
+
+}
