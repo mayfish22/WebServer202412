@@ -1,4 +1,5 @@
-﻿using WebServer.Models.WebServerDB;
+﻿using WebServer.Models.ViewModels;
+using WebServer.Models.WebServerDB;
 
 namespace WebServer.Services
 {
@@ -103,6 +104,34 @@ namespace WebServer.Services
                 {
                     ElementID = "Email", // 對應的網頁元件ID
                     Text = "電子信箱已被使用", // 驗證失敗的訊息
+                });
+            }
+
+            // 返回所有的驗證訊息
+            return result;
+        }
+
+        /// <summary>
+        /// 驗證 ProductViewModel 的資料
+        /// </summary>
+        /// <param name="product"></param>
+        /// <returns></returns>
+        public IEnumerable<ValidatorMessage> ValidateProduct(Product product)
+        {
+            // 儲存驗證結果的列表
+            var result = new List<ValidatorMessage>();
+
+            // 檢查產品編號是否重複
+            var productDups = _webServerDB.Product
+                .Where(s => !s.ID.Equals(product.ID) && s.ProductCode.ToUpper() == (product.ProductCode ?? string.Empty).Trim().ToUpper())
+                .Select(s => s);
+            if (productDups.Any())
+            {
+                // 如果產品編號已被使用，則添加驗證訊息
+                result.Add(new ValidatorMessage
+                {
+                    ElementID = $"{nameof(ProductViewModel.Product)}.{nameof(Product.ProductCode)}", // 對應的網頁元件ID
+                    Text = "產品編號已被使用", // 驗證失敗的訊息
                 });
             }
 

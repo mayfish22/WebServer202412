@@ -17,6 +17,10 @@ public partial class WebServerDBContext : DbContext
 
     public virtual DbSet<LINEUser> LINEUser { get; set; }
 
+    public virtual DbSet<Product> Product { get; set; }
+
+    public virtual DbSet<ProductImage> ProductImage { get; set; }
+
     public virtual DbSet<User> User { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -49,6 +53,48 @@ public partial class WebServerDBContext : DbContext
             entity.Property(e => e.PictureUrl).HasMaxLength(500);
             entity.Property(e => e.StatusMessage).HasMaxLength(500);
             entity.Property(e => e.UnfollowDT).HasColumnType("datetime");
+        });
+
+        modelBuilder.Entity<Product>(entity =>
+        {
+            entity.HasKey(e => e.ID).HasName("PK__Product__3214EC2744B26BB4");
+
+            entity.HasIndex(e => e.ProductCode, "UQ__Product__2F4E024F7AF53008").IsUnique();
+
+            entity.Property(e => e.ID).ValueGeneratedNever();
+            entity.Property(e => e.CreatedDT).HasColumnType("datetime");
+            entity.Property(e => e.ModifiedDT).HasColumnType("datetime");
+            entity.Property(e => e.ProductCode)
+                .IsRequired()
+                .HasMaxLength(20);
+            entity.Property(e => e.ProductDescription).HasMaxLength(500);
+            entity.Property(e => e.ProductName)
+                .IsRequired()
+                .HasMaxLength(50);
+            entity.Property(e => e.UnitPrice).HasColumnType("decimal(10, 2)");
+
+            entity.HasOne(d => d.MainImageFile).WithMany(p => p.Product)
+                .HasForeignKey(d => d.MainImageFileID)
+                .HasConstraintName("FK__Product__MainIma__0B91BA14");
+        });
+
+        modelBuilder.Entity<ProductImage>(entity =>
+        {
+            entity.HasKey(e => e.ID).HasName("PK__ProductI__3214EC27AFC460CD");
+
+            entity.Property(e => e.ID).ValueGeneratedNever();
+            entity.Property(e => e.CreatedDT).HasColumnType("datetime");
+            entity.Property(e => e.ModifiedDT).HasColumnType("datetime");
+
+            entity.HasOne(d => d.File).WithMany(p => p.ProductImage)
+                .HasForeignKey(d => d.FileID)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__ProductIm__FileI__0F624AF8");
+
+            entity.HasOne(d => d.Product).WithMany(p => p.ProductImage)
+                .HasForeignKey(d => d.ProductID)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__ProductIm__Produ__0E6E26BF");
         });
 
         modelBuilder.Entity<User>(entity =>

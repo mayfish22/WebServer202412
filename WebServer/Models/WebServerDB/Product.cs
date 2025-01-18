@@ -5,23 +5,25 @@ using System.Collections.Generic;
 
 namespace WebServer.Models.WebServerDB;
 
-public partial class FileStorage
+public partial class Product
 {
     public Guid ID { get; set; }
 
-    public string Type { get; set; }
+    public string ProductCode { get; set; }
 
-    public string Name { get; set; }
+    public string ProductName { get; set; }
 
-    public int Size { get; set; }
+    public string ProductDescription { get; set; }
 
-    public string Path { get; set; }
+    public decimal UnitPrice { get; set; }
 
-    public Guid? CreatedUserID { get; set; }
+    public Guid? MainImageFileID { get; set; }
 
     public DateTime CreatedDT { get; set; }
 
-    public virtual ICollection<Product> Product { get; set; } = new List<Product>();
+    public DateTime? ModifiedDT { get; set; }
+
+    public virtual FileStorage MainImageFile { get; set; }
 
     public virtual ICollection<ProductImage> ProductImage { get; set; } = new List<ProductImage>();
 }

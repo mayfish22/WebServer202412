@@ -1,0 +1,472 @@
+﻿@model WebServer.Models.ViewModels.ProductViewModel
+
+@{
+    var controller = ViewContext.RouteData.Values["controller"].ToString();
+    var action = ViewContext.RouteData.Values["action"].ToString();
+}
+
+@section Styles {
+
+}
+
+<div class="container-xxl mt-5">
+    <form role="form" asp-action="@action" asp-route-id="@Model.Product.ID">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="row clearfix">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="body">
+                                <div asp-validation-summary="All" class="text-danger"></div>
+                                <input type="hidden" asp-for="Product.ID" />
+
+                                <div class="form-group row mt-4">
+                                    <label asp-for="Product.ProductCode" class="control-label col-md-2 text-end"></label>
+                                    <div class="col-md-8">
+                                        @if (Model.IsReadonly)
+                                        {
+                                            <input readonly type="text" asp-for="Product.ProductCode" class="form-control" />
+                                        }
+                                        else
+                                        {
+                                            <input type="text" asp-for="Product.ProductCode" class="form-control" />
+                                        }
+                                    </div>
+                                    <div class="col-md-2">
+                                        <span asp-validation-for="Product.ProductCode" class="text-danger"></span>
+                                    </div>
+                                </div> 
+                                <div class="form-group row mt-4">
+                                    <label asp-for="Product.ProductName" class="control-label col-md-2 text-end"></label>
+                                    <div class="col-md-8">
+                                        @if (Model.IsReadonly)
+                                        {
+                                            <input readonly type="text" asp-for="Product.ProductName" class="form-control" />
+                                        }
+                                        else
+                                        {
+                                            <input type="text" asp-for="Product.ProductName" class="form-control" />
+                                        }
+                                    </div>
+                                    <div class="col-md-2">
+                                        <span asp-validation-for="Product.ProductName" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="form-group row mt-4">
+                                    <label asp-for="Product.ProductDescription" class="control-label col-md-2 text-end"></label>
+                                    <div class="col-md-8">
+                                        @if (Model.IsReadonly)
+                                        {
+                                            <textarea readonly asp-for="Product.ProductDescription" class="form-control" rows="4"></textarea>
+                                        }
+                                        else
+                                        {
+                                            <textarea asp-for="Product.ProductDescription" class="form-control" rows="4"></textarea>
+                                        }
+                                    </div>
+                                    <div class="col-md-2">
+                                        <span asp-validation-for="Product.ProductDescription" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="form-group row mt-4">
+                                    <label asp-for="Product.UnitPrice" class="control-label col-md-2 text-end"></label>
+                                    <div class="col-md-8">
+                                        @if (Model.IsReadonly)
+                                        {
+                                            <input readonly type="number" step="1" min="0" placeholder="0" asp-for="Product.UnitPrice" value="@((int)Model.Product.UnitPrice)" class="form-control" />
+                                        }
+                                        else
+                                        {
+                                            <input type="number" step="1" min="0" placeholder="0" oninput="validateInteger(this)" asp-for="Product.UnitPrice" value="@((int)Model.Product.UnitPrice)" class="form-control" />
+                                        }
+                                    </div>
+                                    <div class="col-md-2">
+                                        <span asp-validation-for="Product.UnitPrice" class="text-danger"></span>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row mt-4">
+                                    <label asp-for="Product.MainImageFileID" class="control-label col-md-2 text-end"></label>
+                                    <div class="col-md-8">
+                                        @if (Model.IsReadonly)
+                                        {
+                                            <input disabled type="file" asp-for="Product.MainImageFileID" class="form-control" data-id="@(Model.Product.MainImageFileID.HasValue ? Model.Product.MainImageFileID.Value.ToString() : string.Empty)" />
+                                        }
+                                        else
+                                        {
+                                            <input type="file" asp-for="Product.MainImageFileID" class="form-control" data-id="@(Model.Product.MainImageFileID.HasValue ? Model.Product.MainImageFileID.Value.ToString() : string.Empty)" />
+                                        }
+                                    </div>
+                                    <div class="col-md-2">
+                                        <span asp-validation-for="Product.MainImageFileID" class="text-danger"></span>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row mt-4">
+                                    <label asp-for="ProductImages" class="control-label col-md-2 text-end"></label>
+                                    <div class="col-md-8">
+                                        @if (Model.IsReadonly)
+                                        {
+                                            <input multiple disabled type="file" asp-for="ProductImages" class="form-control" data-id="@(string.Join(',', Model.ProductImages.Select(s=>s.ToString())))" />
+                                        }
+                                        else
+                                        {
+                                            <input multiple type="file" asp-for="ProductImages" class="form-control" data-id="@(string.Join(',', Model.ProductImages.Select(s=>s.ToString())))" />
+                                        }
+                                    </div>
+                                    <div class="col-md-2">
+                                        <span asp-validation-for="ProductImages" class="text-danger"></span>
+                                    </div>
+                                </div>
+
+                                <div class="d-flex justify-content-center mt-5 mb-5">
+                                    @if (@action == "Detail")
+                                    {
+                                        <a class="btn btn-sm btn-success" asp-action="Edit" asp-route-id="@Model.Product.ID">編輯</a>
+                                        <a class="btn btn-sm btn-secondary ms-5" asp-action="Index">取消</a>
+                                    }
+                                    else if (@action == "Create" || @action == "Edit")
+                                    {
+                                        <input type="submit" value="儲存" class="btn btn-sm btn-success" />
+                                        <a class="btn btn-sm btn-secondary ms-5" asp-action="Index">取消</a>
+                                    }
+                                    else if (@action == "Delete")
+                                    {
+                                        <input type="submit" value="刪除" class="btn btn-sm btn-danger" />
+                                        <a class="btn btn-sm btn-secondary ms-5" asp-action="Index">取消</a>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+
+@section Scripts {
+    <script type="module">
+        // 載入多國語系
+        import FilePond_lang from '/lib/filepond/locale/zh-tw.js'; // 引入繁體中文語言包
+
+        // 使用 jQuery 的 $ 函數來確保 DOM 完全加載後執行
+        $(async () => {
+            // 註冊 FilePond 插件
+            FilePond.registerPlugin(FilePondPluginFileValidateType); // 文件類型驗證插件
+            FilePond.registerPlugin(FilePondPluginImagePreview); // 圖像預覽插件
+            FilePond.registerPlugin(FilePondPluginFileMetadata); // 文件元數據插件
+            FilePond.registerPlugin(FilePondPluginGetFile); // 獲取文件插件
+            FilePond.registerPlugin(FilePondPluginMoveFile); // 移動文件插件
+            FilePond.registerPlugin(FilePondPluginMediaPreview); // 媒體預覽插件
+            FilePond.registerPlugin(FilePondPluginPdfPreview); // PDF 預覽插件
+
+            // 設置 FilePond 的選項，使用繁體中文語言包
+            FilePond.setOptions(FilePond_lang);
+        });
+
+        // Product_MainImageFileID
+        $(async () => {
+            const $inputFile = $('#Product_MainImageFileID');
+
+            //初始化數據
+            let files = [];
+            if ($inputFile.attr('data-id').length > 0) {
+                const fileIds = $inputFile.attr('data-id').split(',');
+                fileIds.forEach((fileId) => {
+                    files.push({
+                        source: fileId, 
+                        options: {
+                            type: 'local'
+                        }
+                    });
+                });
+            }
+
+            //Create FilePond
+            //參數 https://pqina.nl/filepond/docs/api/instance/properties/
+            const pond = FilePond.create($inputFile[0], {
+                credits: true,
+                disabled: false,
+                allowMultiple: false,
+                acceptedFileTypes: ['image/*'], // 只接受圖片類型
+                fileValidateTypeLabelExpectedTypesMap: null,
+                allowPdfPreview: true,
+                pdfPreviewHeight: 320,
+                pdfComponentExtraParams: 'toolbar=0&view=fit&page=1',
+                files: files,
+                server:
+                {
+                    //上傳
+                    process: (fieldName, file, metadata, load, error, progress, abort, transfer, options) => {
+                        // fieldName is the name of the input field
+                        // file is the actual file object to send
+                        const formData = new FormData();
+                        formData.append(fieldName, file, file.name);
+                        //formData.append('message', 'FilePond');// 對應/Streaming/Upload,  不然不需要此行
+
+                        const request = new XMLHttpRequest();
+                        request.open('POST', '/Streaming/Upload');
+
+                        // Should call the progress method to update the progress to 100% before calling load
+                        // Setting computable to false switches the loading indicator to infinite mode
+                        request.upload.onprogress = (e) => {
+                            progress(e.lengthComputable, e.loaded, e.total);
+                        };
+
+                        // Should call the load method when done and pass the returned server file id
+                        // this server file id is then used later on when reverting or restoring a file
+                        // so your server knows which file to return without exposing that info to the client
+                        request.onload = function () {
+                            if (request.status >= 200 && request.status < 300) {
+                                // the load method accepts either a string (id) or an object
+                                load(JSON.parse(request.responseText).ids[0]);
+                            }
+                            else {
+                                // Can call the error method if something is wrong, should exit after
+                                error('oh no');
+                            }
+                        };
+
+                        request.send(formData);
+
+                        // Should expose an abort method so the request can be cancelled
+                        return {
+                            abort: () => {
+                                // This function is entered if the user has tapped the cancel button
+                                request.abort();
+
+                                // Let FilePond know the request has been cancelled
+                                abort();
+                            }
+                        };
+                    },
+                    //下載
+                    load: async (source, load, error, progress, abort, headers) => {
+                        // Should request a file object from the server here
+                        const file = await (async (source) => {
+                            try {
+                                const settings = {
+                                    headers: {
+                                        'user-agent': navigator.userAgent,
+                                        'content-type': 'application/json'
+                                    },
+                                    method: 'GET'
+                                };
+                                const fetchResponse = await fetch(`/Streaming/Download/${source}`, settings);
+                                const blob = await fetchResponse.blob();
+                                //解析檔名
+                                let filename;
+                                const disposition = decodeURIComponent(fetchResponse.headers.get('content-disposition'));
+                                if (disposition && disposition.match(/attachment/)) {
+                                    filename = disposition.replace(/^.*filename\*=UTF-8[\u0027][\u0027](.+)$/, '$1')
+                                    filename = filename && filename !== '' ? filename : 'file';
+                                }
+                                return blobToFile(blob, filename);
+                            } catch (e) {
+                                return e;
+                            }
+                        })(source);
+                        // Can call the error method if something is wrong, should exit after
+                        error('oh my goodness');
+
+                        // Can call the header method to supply FilePond with early response header string
+                        // https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/getAllResponseHeaders
+                        //headers(headersString);
+
+                        // Should call the progress method to update the progress to 100% before calling load
+                        // (endlessMode, loadedSize, totalSize)
+                        progress(true, 1024, 1024);
+
+                        // Should call the load method with a file object or blob when done
+                        load(file);
+                        //重設畫面上顯示的檔名
+                        for (let i = 0; i < $('.filepond--file-info-main').length; i++) {
+                            if ($('.filepond--file-info-main').eq(i)[0].innerHTML.indexOf(source) >= 0) {
+                                $('.filepond--file-info-main').eq(i)[0].innerHTML = $('.filepond--file-info-main').eq(i)[0].innerHTML.replace(source, file.name);
+                                break;
+                            }
+                        }
+                        // Should expose an abort method so the request can be cancelled
+                        return {
+                            abort: () => {
+                                // User tapped cancel, abort our ongoing actions here
+
+                                // Let FilePond know the request has been cancelled
+                                abort();
+                            }
+                        };
+                    }
+                },
+                beforeAddFile: (data) => {
+                    return true;
+                },
+                labelFileProcessingError: (error) => {
+                    let data = JSON.parse(error.body);
+                    return data.File;
+                }
+            });
+        });
+
+        // ProductImages
+        $(async () => {
+            const $inputFile = $('#ProductImages');
+
+            //初始化數據
+            let files = [];
+            if ($inputFile.attr('data-id').length > 0) {
+                const fileIds = $inputFile.attr('data-id').split(',');
+                fileIds.forEach((fileId) => {
+                    files.push({
+                        source: fileId,
+                        options: {
+                            type: 'local'
+                        }
+                    });
+                });
+            }
+            //Create FilePond
+            //參數 https://pqina.nl/filepond/docs/api/instance/properties/
+            const pond = FilePond.create($inputFile[0], {
+                credits: true,
+                disabled: false,
+                allowMultiple: true,
+                acceptedFileTypes: ['image/*'], // 只接受圖片類型
+                fileValidateTypeLabelExpectedTypesMap: null,
+                allowPdfPreview: true,
+                pdfPreviewHeight: 320,
+                pdfComponentExtraParams: 'toolbar=0&view=fit&page=1',
+                files: files,
+                server:
+                {
+                    //上傳
+                    process: (fieldName, file, metadata, load, error, progress, abort, transfer, options) => {
+                        // fieldName is the name of the input field
+                        // file is the actual file object to send
+                        const formData = new FormData();
+                        formData.append(fieldName, file, file.name);
+                        //formData.append('message', 'FilePond');// 對應/Streaming/Upload,  不然不需要此行
+
+                        const request = new XMLHttpRequest();
+                        request.open('POST', '/Streaming/Upload');
+
+                        // Should call the progress method to update the progress to 100% before calling load
+                        // Setting computable to false switches the loading indicator to infinite mode
+                        request.upload.onprogress = (e) => {
+                            progress(e.lengthComputable, e.loaded, e.total);
+                        };
+
+                        // Should call the load method when done and pass the returned server file id
+                        // this server file id is then used later on when reverting or restoring a file
+                        // so your server knows which file to return without exposing that info to the client
+                        request.onload = function () {
+                            if (request.status >= 200 && request.status < 300) {
+                                // the load method accepts either a string (id) or an object
+                                load(JSON.parse(request.responseText).ids[0]);
+                            }
+                            else {
+                                // Can call the error method if something is wrong, should exit after
+                                error('oh no');
+                            }
+                        };
+
+                        request.send(formData);
+
+                        // Should expose an abort method so the request can be cancelled
+                        return {
+                            abort: () => {
+                                // This function is entered if the user has tapped the cancel button
+                                request.abort();
+
+                                // Let FilePond know the request has been cancelled
+                                abort();
+                            }
+                        };
+                    },
+                    //下載
+                    load: async (source, load, error, progress, abort, headers) => {
+                        // Should request a file object from the server here
+                        const file = await (async (source) => {
+                            try {
+                                const settings = {
+                                    headers: {
+                                        'user-agent': navigator.userAgent,
+                                        'content-type': 'application/json'
+                                    },
+                                    method: 'GET'
+                                };
+                                const fetchResponse = await fetch(`/Streaming/Download/${source}`, settings);
+                                const blob = await fetchResponse.blob();
+                                //解析檔名
+                                let filename;
+                                const disposition = decodeURIComponent(fetchResponse.headers.get('content-disposition'));
+                                if (disposition && disposition.match(/attachment/)) {
+                                    filename = disposition.replace(/^.*filename\*=UTF-8[\u0027][\u0027](.+)$/, '$1')
+                                    filename = filename && filename !== '' ? filename : 'file';
+                                }
+                                return blobToFile(blob, filename);
+                            } catch (e) {
+                                return e;
+                            }
+                        })(source);
+                        // Can call the error method if something is wrong, should exit after
+                        error('oh my goodness');
+
+                        // Can call the header method to supply FilePond with early response header string
+                        // https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/getAllResponseHeaders
+                        //headers(headersString);
+
+                        // Should call the progress method to update the progress to 100% before calling load
+                        // (endlessMode, loadedSize, totalSize)
+                        progress(true, 1024, 1024);
+
+                        // Should call the load method with a file object or blob when done
+                        load(file);
+                        //重設畫面上顯示的檔名
+                        for (let i = 0; i < $('.filepond--file-info-main').length; i++) {
+                            if ($('.filepond--file-info-main').eq(i)[0].innerHTML.indexOf(source) >= 0) {
+                                $('.filepond--file-info-main').eq(i)[0].innerHTML = $('.filepond--file-info-main').eq(i)[0].innerHTML.replace(source, file.name);
+                                break;
+                            }
+                        }
+                        // Should expose an abort method so the request can be cancelled
+                        return {
+                            abort: () => {
+                                // User tapped cancel, abort our ongoing actions here
+
+                                // Let FilePond know the request has been cancelled
+                                abort();
+                            }
+                        };
+                    }
+                },
+                beforeAddFile: (data) => {
+                    return true;
+                },
+                labelFileProcessingError: (error) => {
+                    let data = JSON.parse(error.body);
+                    return data.File;
+                }
+            });
+        });
+
+        function blobToFile(theBlob, fileName) {
+            //A Blob() is almost a File() - it's just missing the two properties below which we will add
+            theBlob.lastModifiedDate = new Date();
+            theBlob.name = fileName;
+            //return theBlob;
+            return new File([theBlob], fileName, { type: theBlob.type });
+        }
+    </script>
+
+    <script>
+        function validateInteger(input) {
+            const value = input.value;
+            const regex = /^\d*$/; // 正則表達式，允許整數（包括空字符串）
+            if (!regex.test(value) && value !== "") {
+                input.value = value.slice(0, -1); // 如果不符合，刪除最後一個字符
+            }
+        }
+    </script>
+}
