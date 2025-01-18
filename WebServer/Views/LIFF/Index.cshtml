@@ -1,4 +1,6 @@
-﻿@{
+﻿@model List<WebServer.Models.WebServerDB.Product>
+
+@{
     Layout = "_LayoutWithoutMenu";
     var liffID = _configuration.GetValue<string>("LINE:LINELogin:LIFFID");
 }
@@ -7,10 +9,58 @@
 
 }
 
-<div class="main">
-    <div class="col" align="center">
-        <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
-        <span class="sr-only"> 歡迎光臨 </span>
+<div class="container-xxl flex-grow-1 container-p-y">
+    <div class="col-md">
+        <h5 class="my-4">新品上市</h5>
+
+        <div id="carouselExample-cf" class="carousel slide carousel-fade" data-bs-ride="carousel">
+            <ol class="carousel-indicators">
+                @foreach (var item in Model.Select((s, i) => new { Product = s, Index = i }))
+                {
+                    if (item.Index == 0){
+                        <li data-bs-target="#carouselExample-cf" data-bs-slide-to="@item.Index" class="active" aria-current="true"></li>
+                    }
+                    else{
+                        <li data-bs-target="#carouselExample-cf" data-bs-slide-to="@item.Index"></li>
+                    }
+                    
+                }
+            </ol>
+            <div class="carousel-inner">
+                @foreach (var item in Model.Select((s, i) => new { Product = s, Index = i }))
+                {
+                    if (item.Index == 0)
+                    {
+                        <div class="carousel-item active" data-bs-interval="2000">
+                            <img class="d-block w-100" src="/Streaming/Download/@(item.Product.MainImageFileID.ToString())">
+                            <div class="carousel-caption d-none d-md-block">
+                                <h3>@(item.Product.ProductName)</h3>
+                                <p>@(item.Product.ProductDescription)</p>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="carousel-item" data-bs-interval="2000">
+                            <img class="d-block w-100" src="/Streaming/Download/@(item.Product.MainImageFileID.ToString())">
+                            <div class="carousel-caption d-none d-md-block">
+                                <h3>@(item.Product.ProductName)</h3>
+                                <p>@(item.Product.ProductDescription)</p>
+                            </div>
+                        </div>
+                    }
+
+                }
+            </div>
+            <a class="carousel-control-prev" href="#carouselExample-cf" role="button" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </a>
+            <a class="carousel-control-next" href="#carouselExample-cf" role="button" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </a>
+        </div>
     </div>
 </div>
 

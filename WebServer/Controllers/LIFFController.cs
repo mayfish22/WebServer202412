@@ -4,7 +4,8 @@ using Microsoft.AspNetCore.Mvc; // 引入 MVC 控制器相關的命名空間
 using System.Security.Claims; // 引入安全性聲明相關的命名空間
 using WebServer.Models.WebServerDB; // 引入 WebServerDB 模型相關的命名空間
 using WebServer.Services; // 引入服務相關的命名空間
-using System.Text.Json; // 引入 JSON 處理相關的命名空間
+using System.Text.Json;
+using Microsoft.EntityFrameworkCore; // 引入 JSON 處理相關的命名空間
 
 namespace WebServer.Controllers;
 
@@ -26,8 +27,10 @@ public class LIFFController : Controller
     [HttpGet]
     public async Task<IActionResult> Index()
     {
-        await Task.Yield(); // 讓控制器的執行權限回到調用者，這裡可以用於模擬非同步操作
-        return View(@"~/Views/LIFF/Index.cshtml"); // 返回視圖
+        // 取出價格最高前10筆
+        var products = await _webServerDB.Product.OrderByDescending(s => s.UnitPrice).Take(10).ToListAsync();
+
+        return View(@"~/Views/LIFF/Index.cshtml", products); // 返回視圖
     }
 
     // 用於接收從前端發送的請求以獲取用戶資料的參數類別
