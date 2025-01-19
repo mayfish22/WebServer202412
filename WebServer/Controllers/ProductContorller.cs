@@ -429,9 +429,12 @@ public class ProductController : Controller  // 定義產品控制器類別，�
         {
             var product = await _webServerDB.Product.FindAsync(id);
             // 檢查產品是否存在
-            _webServerDB.Product.Remove(product);
             if (product == null)
                 throw new Exception("產品不存在");
+            var productImages = await _webServerDB.ProductImage.Where(s => s.ProductID.Equals(product.ID)).Select(s => s).ToListAsync();
+            if (productImages.Count > 0)
+                _webServerDB.ProductImage.RemoveRange(productImages);
+            _webServerDB.Product.Remove(product);
             // 保存更改到數據庫
             await _webServerDB.SaveChangesAsync();
         }
