@@ -8,6 +8,11 @@
 
   <ItemGroup>
     <Compile Remove="Controllers\LIFFAPIController.cs" />
+    <Compile Remove="Services\Invocables\CaptureAPIInvocable.cs" />
+    <Compile Remove="Services\Invocables\CheckPaymentStatusApiInvocable.cs" />
+    <Compile Remove="Services\Invocables\ConfirmApiInvocable.cs" />
+    <Compile Remove="Services\Invocables\RefundAPIInvocable.cs" />
+    <Compile Remove="Services\Invocables\VoidAPIInvocable.cs" />
   </ItemGroup>
 
   <ItemGroup>

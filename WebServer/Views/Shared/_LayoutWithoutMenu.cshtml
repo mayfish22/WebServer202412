@@ -1,18 +1,6 @@
 ﻿<!DOCTYPE html>
 
-<!-- =========================================================
-* Sneat - Bootstrap 5 HTML Admin Template - Pro | v1.0.0
-==============================================================
-
-* Product Page: https://themeselection.com/products/sneat-bootstrap-html-admin-template/
-* Created by: ThemeSelection
-* License: You must have a valid license purchased in order to legally use the theme for your project.
-* Copyright ThemeSelection (https://themeselection.com)
-
-=========================================================
- -->
-<!-- beautify ignore:start -->
-<html lang="en"
+<html lang="zh-tw"
       class="light-style layout-menu-fixed"
       dir="ltr"
       data-theme="theme-default"
@@ -23,7 +11,7 @@
     <meta name="viewport"
           content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
 
-    <title>Without menu - Layouts | Sneat - Bootstrap 5 HTML Admin Template - Pro</title>
+    <title>線上購物</title>
 
     <meta name="description" content="" />
 
@@ -66,6 +54,8 @@
     <link rel="stylesheet" href="/lib/filepond/plugin/filepond-plugin-move-file/filepond-plugin-move-file.css" asp-append-version="true" />
     <link rel="stylesheet" href="/lib/filepond/plugin/filepond-plugin-pdf-preview/filepond-plugin-pdf-preview.css" asp-append-version="true" />
 
+    <link rel="stylesheet" href="/lib/sweetalert2/sweetalert2.css" asp-append-version="true" />
+
     @await RenderSectionAsync("Styles", required: false)
 </head>
 
@@ -86,23 +76,13 @@
                                 <i class="bx bx-search fs-4 lh-0"></i>
                                 <input type="text"
                                        class="form-control border-0 shadow-none"
-                                       placeholder="Search..."
-                                       aria-label="Search..." />
+                                       placeholder="搜尋..."
+                                       aria-label="搜尋..." />
                             </div>
                         </div>
                         <!-- /Search -->
 
                         <ul class="navbar-nav flex-row align-items-center ms-auto">
-                            <!-- Place this tag where you want the button to render. -->
-                            <li class="nav-item lh-1 me-3">
-                                <a class="github-button"
-                                   href="https://github.com/themeselection/sneat-html-admin-template-free"
-                                   data-icon="octicon-star"
-                                   data-size="large"
-                                   data-show-count="true"
-                                   aria-label="Star themeselection/sneat-html-admin-template-free on GitHub">Star</a>
-                            </li>
-
                             <!-- User -->
 
                             <vc:line-user-profile></vc:line-user-profile>
@@ -175,6 +155,13 @@
     <script src="/lib/filepond/plugin/filepond-plugin-media-preview/filepond-plugin-media-preview.js" asp-append-version="true"></script>
     <script src="/lib/filepond/plugin/filepond-plugin-move-file/filepond-plugin-move-file.js" asp-append-version="true"></script>
     <script src="/lib/filepond/plugin/filepond-plugin-pdf-preview/filepond-plugin-pdf-preview.js" asp-append-version="true"></script>
+
+    <script src="/lib/sweetalert2/sweetalert2.min.js" asp-append-version="true"></script>
+    <script src="/lib/move.js/move.min.js" asp-append-version="true"></script>
+
+    <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+
+    <script src="/js/site.js" asp-append-version="true"></script>
 
     @await RenderSectionAsync("Scripts", required: false)
 </body>

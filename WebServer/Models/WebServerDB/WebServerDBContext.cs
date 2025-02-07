@@ -13,11 +13,25 @@ public partial class WebServerDBContext : DbContext
     {
     }
 
+    public virtual DbSet<CartItem> CartItem { get; set; }
+
     public virtual DbSet<FileStorage> FileStorage { get; set; }
+
+    public virtual DbSet<LINEPayCapture> LINEPayCapture { get; set; }
+
+    public virtual DbSet<LINEPayConfirm> LINEPayConfirm { get; set; }
+
+    public virtual DbSet<LINEPayRefund> LINEPayRefund { get; set; }
+
+    public virtual DbSet<LINEPayRequest> LINEPayRequest { get; set; }
+
+    public virtual DbSet<LINEPayVoid> LINEPayVoid { get; set; }
 
     public virtual DbSet<LINEUser> LINEUser { get; set; }
 
-    public virtual DbSet<LINEUserMapping> LINEUserMapping { get; set; }
+    public virtual DbSet<Order> Order { get; set; }
+
+    public virtual DbSet<OrderDetail> OrderDetail { get; set; }
 
     public virtual DbSet<Product> Product { get; set; }
 
@@ -28,6 +42,30 @@ public partial class WebServerDBContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.UseCollation("Chinese_Taiwan_Stroke_CI_AS");
+
+        modelBuilder.Entity<CartItem>(entity =>
+        {
+            entity.HasKey(e => e.ID).HasName("PK__CartItem__3214EC27D6B440FB");
+
+            entity.HasIndex(e => new { e.LINEUserID, e.ProductID }, "UQ__CartItem__B7F18F60593AC271").IsUnique();
+
+            entity.Property(e => e.ID).ValueGeneratedNever();
+            entity.Property(e => e.CreatedDT).HasColumnType("datetime");
+            entity.Property(e => e.LINEUserID)
+                .IsRequired()
+                .HasMaxLength(50);
+            entity.Property(e => e.ModifiedDT).HasColumnType("datetime");
+
+            entity.HasOne(d => d.LINEUser).WithMany(p => p.CartItem)
+                .HasForeignKey(d => d.LINEUserID)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__CartItem__LINEUs__55F4C372");
+
+            entity.HasOne(d => d.Product).WithMany(p => p.CartItem)
+                .HasForeignKey(d => d.ProductID)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__CartItem__Produc__56E8E7AB");
+        });
 
         modelBuilder.Entity<FileStorage>(entity =>
         {
@@ -46,6 +84,65 @@ public partial class WebServerDBContext : DbContext
                 .HasMaxLength(50);
         });
 
+        modelBuilder.Entity<LINEPayCapture>(entity =>
+        {
+            entity.HasKey(e => e.ID).HasName("PK__LINEPayC__3214EC2736F08652");
+
+            entity.Property(e => e.ID).ValueGeneratedNever();
+            entity.Property(e => e.CreatedDT).HasColumnType("datetime");
+            entity.Property(e => e.OrderNo)
+                .IsRequired()
+                .HasMaxLength(20);
+            entity.Property(e => e.RequestBody).IsRequired();
+        });
+
+        modelBuilder.Entity<LINEPayConfirm>(entity =>
+        {
+            entity.HasKey(e => e.ID).HasName("PK__LINEPayC__3214EC27CE687755");
+
+            entity.Property(e => e.ID).ValueGeneratedNever();
+            entity.Property(e => e.CreatedDT).HasColumnType("datetime");
+            entity.Property(e => e.OrderNo)
+                .IsRequired()
+                .HasMaxLength(20);
+            entity.Property(e => e.RequestBody).IsRequired();
+        });
+
+        modelBuilder.Entity<LINEPayRefund>(entity =>
+        {
+            entity.HasKey(e => e.ID).HasName("PK__LINEPayR__3214EC272E0C756D");
+
+            entity.Property(e => e.ID).ValueGeneratedNever();
+            entity.Property(e => e.CreatedDT).HasColumnType("datetime");
+            entity.Property(e => e.OrderNo)
+                .IsRequired()
+                .HasMaxLength(20);
+            entity.Property(e => e.RequestBody).IsRequired();
+        });
+
+        modelBuilder.Entity<LINEPayRequest>(entity =>
+        {
+            entity.HasKey(e => e.ID).HasName("PK__LINEPayR__3214EC27DB16F2CB");
+
+            entity.Property(e => e.ID).ValueGeneratedNever();
+            entity.Property(e => e.CreatedDT).HasColumnType("datetime");
+            entity.Property(e => e.OrderNo)
+                .IsRequired()
+                .HasMaxLength(20);
+            entity.Property(e => e.RequestBody).IsRequired();
+        });
+
+        modelBuilder.Entity<LINEPayVoid>(entity =>
+        {
+            entity.HasKey(e => e.ID).HasName("PK__LINEPayV__3214EC2777DC5E74");
+
+            entity.Property(e => e.ID).ValueGeneratedNever();
+            entity.Property(e => e.CreatedDT).HasColumnType("datetime");
+            entity.Property(e => e.OrderNo)
+                .IsRequired()
+                .HasMaxLength(20);
+        });
+
         modelBuilder.Entity<LINEUser>(entity =>
         {
             entity.Property(e => e.ID).HasMaxLength(50);
@@ -57,11 +154,13 @@ public partial class WebServerDBContext : DbContext
             entity.Property(e => e.UnfollowDT).HasColumnType("datetime");
         });
 
-        modelBuilder.Entity<LINEUserMapping>(entity =>
+        modelBuilder.Entity<Order>(entity =>
         {
-            entity.HasKey(e => e.ID).HasName("PK__LINEUser__3214EC2716D2EE52");
+            entity.HasKey(e => e.ID).HasName("PK__Order__3214EC270C9DF247");
 
-            entity.HasIndex(e => new { e.LINEUserID, e.UserID }, "UQ_LINEUserID_UserID").IsUnique();
+            entity.HasIndex(e => e.OrderNo, "IX_Order").IsUnique();
+
+            entity.HasIndex(e => new { e.OrderDate, e.OrderSeq }, "UQ__Order__288168EEA3B4DACF").IsUnique();
 
             entity.Property(e => e.ID).ValueGeneratedNever();
             entity.Property(e => e.CreatedDT).HasColumnType("datetime");
@@ -69,16 +168,38 @@ public partial class WebServerDBContext : DbContext
                 .IsRequired()
                 .HasMaxLength(50);
             entity.Property(e => e.ModifiedDT).HasColumnType("datetime");
+            entity.Property(e => e.OrderNo)
+                .IsRequired()
+                .HasMaxLength(20);
+            entity.Property(e => e.PaymentStatus)
+                .IsRequired()
+                .HasMaxLength(20);
+            entity.Property(e => e.TotalAmount).HasColumnType("decimal(10, 2)");
 
-            entity.HasOne(d => d.LINEUser).WithMany(p => p.LINEUserMapping)
+            entity.HasOne(d => d.LINEUser).WithMany(p => p.Order)
                 .HasForeignKey(d => d.LINEUserID)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__LINEUserM__LINEU__1DB06A4F");
+                .HasConstraintName("FK__Order__LINEUserI__395884C4");
+        });
 
-            entity.HasOne(d => d.User).WithMany(p => p.LINEUserMapping)
-                .HasForeignKey(d => d.UserID)
+        modelBuilder.Entity<OrderDetail>(entity =>
+        {
+            entity.HasKey(e => e.ID).HasName("PK__OrderDet__3214EC27C81671FE");
+
+            entity.Property(e => e.ID).ValueGeneratedNever();
+            entity.Property(e => e.CreatedDT).HasColumnType("datetime");
+            entity.Property(e => e.ModifiedDT).HasColumnType("datetime");
+            entity.Property(e => e.UnitPrice).HasColumnType("decimal(10, 2)");
+
+            entity.HasOne(d => d.Order).WithMany(p => p.OrderDetail)
+                .HasForeignKey(d => d.OrderID)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__LINEUserM__UserI__1CBC4616");
+                .HasConstraintName("FK__OrderDeta__Order__3C34F16F");
+
+            entity.HasOne(d => d.Product).WithMany(p => p.OrderDetail)
+                .HasForeignKey(d => d.ProductID)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__OrderDeta__Produ__3D2915A8");
         });
 
         modelBuilder.Entity<Product>(entity =>

@@ -1,0 +1,49 @@
+﻿@model WebServer.Models.ViewModels.OrderPreviewViewModel
+
+<div class="form-group row mt-4">
+    <label asp-for="Order.Remark" class="control-label col-md-2 text-end"></label>
+    <div class="col-md-8">
+        <textarea asp-for="Order.Remark" class="form-control" rows="4"></textarea>
+    </div>
+</div>
+<div class="form-group row mt-4">
+    <label asp-for="Order.TotalAmount" class="control-label col-md-2 text-end"></label>
+    <div class="col-md-8">
+        <input readonly type="text" asp-for="Order.TotalAmount" value="@Model.Order.TotalAmount.ToString("N0")" class="form-control text-end" />
+    </div>
+</div>
+<div class="table-responsive">
+    <table class="table table-hover">
+        <thead class="thead-dark">
+            <tr>
+                <th class="col-1 col-sm-1 text-center">#</th>
+                <th class="col-5 col-sm-3 text-start">商品名稱</th>
+                <th class="col-2 col-sm-3 text-end">單價</th>
+                <th class="col-2 col-sm-3 text-end">數量</th>
+                <th class="col-2 col-sm-3 text-end">金額</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.OrderDetails.OrderBy(s => s.Seq))
+            {
+                <tr class="stock-card" data-id="@item.ID">
+                    <td>
+                        <div class="text-center" style="white-space:normal;">@item.Seq</div>
+                    </td>
+                    <td>
+                        <div class="text-start" style="white-space:normal;">@item.ProductName</div>
+                    </td>
+                    <td>
+                        <input readonly type="text" class="form-control text-end" value="@(((int)@item.UnitPrice).ToString("N0"))" />
+                    </td>
+                    <td>
+                        <input readonly type="text" class="form-control text-end" value="@item.Quantity"/>
+                    </td>
+                    <td>
+                        <input readonly type="text" class="form-control text-end" value="@(((int)(item.UnitPrice * item.Quantity)).ToString("N0"))" />
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

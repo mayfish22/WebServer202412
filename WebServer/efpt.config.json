@@ -15,7 +15,31 @@
    "T4TemplatePath": null,
    "Tables": [
       {
+         "Name": "[dbo].[CartItem]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[FileStorage]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[LINEPayCapture]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[LINEPayConfirm]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[LINEPayRefund]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[LINEPayRequest]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[LINEPayVoid]",
          "ObjectType": 0
       },
       {
@@ -23,7 +47,11 @@
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[LINEUserMapping]",
+         "Name": "[dbo].[Order]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[OrderDetail]",
          "ObjectType": 0
       },
       {
@@ -52,6 +80,7 @@
    "UseHandleBars": false,
    "UseHierarchyId": false,
    "UseInflector": false,
+   "UseInternalAccessModifiersForSprocsAndFunctions": false,
    "UseLegacyPluralizer": false,
    "UseManyToManyEntity": false,
    "UseNoDefaultConstructor": false,

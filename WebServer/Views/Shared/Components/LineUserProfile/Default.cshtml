@@ -3,9 +3,8 @@
 @{
     var userName = Model != null ? Model.DisplaName : "尚未登入";
     var userEmail = Model != null ? Model.StatusMessage : string.Empty;
-
     var userAvatarID = Model != null && !string.IsNullOrEmpty(Model.PictureUrl) ? $"{Model.PictureUrl}" : $"/assets/img/avatars/1.png";
-
+    var cartItems = Model == null ? new List<WebServer.Models.WebServerDB.CartItem>() : await _siteService.GetCartItems(Model.ID).ToListAsync();
 }
 
 <!--從 layouts-container.html 取得-->
@@ -22,7 +21,7 @@
                 <div class="d-flex">
                     <div class="flex-shrink-0 me-3">
                         <div class="avatar avatar-online">
-                            <img src="@userAvatarID" alt class="w-px-40 h-auto rounded-circle" />
+                            <img src="@userAvatarID" class="w-px-40 h-auto rounded-circle" />
                         </div>
                     </div>
                     <div class="flex-grow-1">
@@ -36,35 +35,23 @@
             <div class="dropdown-divider"></div>
         </li>
         <li>
-            <a class="dropdown-item" href="#">
-                <i class="bx bx-user me-2"></i>
-                <span class="align-middle">My Profile</span>
+            <a class="dropdown-item" href="#" onclick="openOrderHistory()">
+                <i class="bx bx-list-check me-2"></i>
+                <span class="align-middle">購買記錄</span>
             </a>
         </li>
         <li>
-            <a class="dropdown-item" href="#">
-                <i class="bx bx-cog me-2"></i>
-                <span class="align-middle">Settings</span>
-            </a>
-        </li>
-        <li>
-            <a class="dropdown-item" href="#">
+            <a class="dropdown-item" href="#" onclick="openShopcart()">
                 <span class="d-flex align-items-center align-middle">
-                    <i class="flex-shrink-0 bx bx-credit-card me-2"></i>
-                    <span class="flex-grow-1 align-middle">Billing</span>
-                    <span class="flex-shrink-0 badge badge-center rounded-pill bg-danger w-px-20 h-px-20">4</span>
+                    <i class="flex-shrink-0 bx bx-cart me-2"></i>
+                    <span class="flex-grow-1 align-middle">購物車</span>
+                    <span class="flex-shrink-0 badge badge-center rounded-pill bg-danger w-px-20 h-px-20">@(cartItems.Count > 0 ? cartItems.Count.ToString() : string.Empty )</span>
                 </span>
             </a>
         </li>
         <li>
             <div class="dropdown-divider"></div>
         </li>
-        @* <li>
-            <a class="dropdown-item" href="/Account/Signout">
-                <i class="bx bx-power-off me-2"></i>
-                <span class="align-middle">登出</span>
-            </a>
-        </li> *@
     </ul>
 </li>
 <!--/ User -->

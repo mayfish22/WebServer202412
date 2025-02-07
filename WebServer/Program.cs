@@ -182,6 +182,9 @@ public class Program
             builder.Services.AddScoped<SiteService>();
             builder.Services.AddScoped<GeminiAPIService>();
 
+            // µù¥U LINEPay ªA°È
+            builder.Services.AddScoped<LINEPayService>();
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

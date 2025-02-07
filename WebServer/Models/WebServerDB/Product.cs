@@ -23,7 +23,11 @@ public partial class Product
 
     public DateTime? ModifiedDT { get; set; }
 
+    public virtual ICollection<CartItem> CartItem { get; set; } = new List<CartItem>();
+
     public virtual FileStorage MainImageFile { get; set; }
+
+    public virtual ICollection<OrderDetail> OrderDetail { get; set; } = new List<OrderDetail>();
 
     public virtual ICollection<ProductImage> ProductImage { get; set; } = new List<ProductImage>();
 }

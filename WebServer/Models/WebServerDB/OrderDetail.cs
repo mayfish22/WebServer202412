@@ -5,19 +5,25 @@ using System.Collections.Generic;
 
 namespace WebServer.Models.WebServerDB;
 
-public partial class LINEUserMapping
+public partial class OrderDetail
 {
     public Guid ID { get; set; }
 
-    public string LINEUserID { get; set; }
+    public Guid OrderID { get; set; }
 
-    public Guid UserID { get; set; }
+    public int Seq { get; set; }
+
+    public Guid ProductID { get; set; }
+
+    public int Quantity { get; set; }
+
+    public decimal UnitPrice { get; set; }
 
     public DateTime CreatedDT { get; set; }
 
     public DateTime? ModifiedDT { get; set; }
 
-    public virtual LINEUser LINEUser { get; set; }
+    public virtual Order Order { get; set; }
 
-    public virtual User User { get; set; }
+    public virtual Product Product { get; set; }
 }

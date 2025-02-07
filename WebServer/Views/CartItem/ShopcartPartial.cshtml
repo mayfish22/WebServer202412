@@ -1,0 +1,38 @@
+﻿@model List<WebServer.Models.WebServerDB.CartItem>
+
+<div class="table-responsive">
+    <table class="table table-hover">
+        <thead class="thead-dark">
+            <tr>
+                <th class="col-2 col-sm-1">產品圖片</th>
+                <th class="col-4 col-sm-3">商品名稱</th>
+                <th class="col-5 col-sm-6 text-center">數量</th>
+                <th class="col-1 col-sm-1"></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var cartItem in Model)
+            {
+                <tr class="stock-card productItem" data-id="@cartItem.ID">
+                    <td><img src="@cartItem.MainImageURL" style="height:50px; max-width:72px;" alt="Product img"></td>
+                    <td>
+                        <div class="text-start" style="white-space:normal;">@cartItem.ProductName</div>
+                    </td>
+                    <td>
+                        <div class="input-group">
+                            <span class="input-group-text btn-number" data-field="quant[@cartItem.Seq]" data-type="minus"><i class="bx bx-minus"></i></span>
+                            <input type="text" name="quant[@cartItem.Seq]" data-productid="@cartItem.ProductID" class="form-control input-number text-center" value="@cartItem.Quantity" min="1" max="100">
+                            <span class="input-group-text btn-number" data-field="quant[@cartItem.Seq]" data-type="plus"><i class="bx bx-plus"></i></span>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="btn p-0" data-toggle="tooltip" title="刪除" onclick="removeShopCartItem('@cartItem.ID')">
+                            <i class="bx bx-trash text-danger"></i>
+                        </div>
+                    </td>
+                </tr>
+            }
+            
+        </tbody>
+    </table>
+</div>

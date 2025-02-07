@@ -21,5 +21,7 @@ public partial class LINEUser
 
     public DateTime? UnfollowDT { get; set; }
 
-    public virtual ICollection<LINEUserMapping> LINEUserMapping { get; set; } = new List<LINEUserMapping>();
+    public virtual ICollection<CartItem> CartItem { get; set; } = new List<CartItem>();
+
+    public virtual ICollection<Order> Order { get; set; } = new List<Order>();
 }

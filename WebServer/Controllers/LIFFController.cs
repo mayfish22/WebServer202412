@@ -9,6 +9,9 @@ using Microsoft.EntityFrameworkCore; // 引入 JSON 處理相關的命名空間
 
 namespace WebServer.Controllers;
 
+/// <summary>
+/// 用於處理 LIFF 應用程式的控制器
+/// </summary>
 // 設定路由，控制器的路由格式為 {controller}/{action=Index}
 [Route("{controller}/{action=Index}")]
 public class LIFFController : Controller
@@ -28,8 +31,12 @@ public class LIFFController : Controller
     public async Task<IActionResult> Index()
     {
         // 取出價格最高前10筆
-        var products = await _webServerDB.Product.OrderByDescending(s => s.UnitPrice).Take(10).ToListAsync();
-
+        var products = await _webServerDB.Product.OrderBy(s => s.ProductCode).Select(s => s).ToListAsync();
+        products.ForEach(s =>
+        {
+            // 設定商品主要圖片的 URL
+            s.MainImageURL = $"/Streaming/Download/{s.MainImageFileID}";
+        });
         return View(@"~/Views/LIFF/Index.cshtml", products); // 返回視圖
     }
 

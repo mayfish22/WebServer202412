@@ -1,0 +1,48 @@
+﻿@model List<WebServer.Models.WebServerDB.Order>
+
+<div class="table-responsive">
+    <table class="table table-hover">
+        <thead class="thead-dark">
+            <tr>
+                <th class="col-1 col-sm-1 text-center">#</th>
+                <th class="col-3 col-sm-2 text-center">日期</th>
+                <th class="col-2 col-sm-2 text-center">序號</th>
+                <th class="col-3 col-sm-4 text-end">金額</th>
+                <th class="col-3 col-sm-3 text-center">狀態</th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                int seq = 1;
+            }
+            @foreach (var item in Model)
+            {
+                <tr class="stock-card" data-id="@item.ID">
+                    <td>
+                        <div class="text-center" style="white-space:normal;">@(seq++)</div>
+                    </td>
+                    <td>
+                        <div class="text-center" style="white-space:normal;">@item.OrderDate.ToString("MM-dd")</div>
+                    </td>
+                    <td>
+                        <div class="text-center" style="white-space:normal;">@item.OrderSeq</div>
+                    </td>
+                    <td>
+                        <div class="text-end" style="white-space:normal;">@item.TotalAmount.ToString("N0")</div>
+                    </td>
+                    <td>
+                        @if (string.IsNullOrEmpty(item.PaymentUrl)){
+                            <div class="text-center" style="white-space:normal;">@item.PaymentStatus</div>
+                        }
+                        else{
+                            <div class="text-center" style="white-space:normal; text-align:center;">
+                                <a href="@item.PaymentUrl" class="w-100">@item.PaymentStatus</a>
+                            </div>
+                        }
+                    </td>
+                </tr>
+            }
+
+        </tbody>
+    </table>
+</div>
