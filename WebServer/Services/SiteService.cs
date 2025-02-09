@@ -68,7 +68,7 @@ public class SiteService
         catch (Exception ex)
         {
             // 記錄錯誤資訊
-            Log.Error(nameof(SiteService), ex);
+            Log.Error(ex, nameof(SiteService));
         }
         return userProfile;
     }
