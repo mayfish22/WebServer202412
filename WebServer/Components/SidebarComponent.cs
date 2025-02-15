@@ -41,6 +41,33 @@ public class SidebarComponent : ViewComponent // 繼承自 ViewComponent 類別
                     URL = "/Product/Index",
                     Icon = "menu-icon tf-icons bx bx-collection",
                 },
+                new MenuItem // 訂單主檔選項
+                {
+                    Title = "訂單主檔",
+                    URL = "/Order/Index",
+                    Icon = "menu-icon tf-icons bx bx-crown",
+                },
+                new MenuItem // 資料匯出選項，包含子選項
+                {
+                    Title = "資料匯出",
+                    URL = string.Empty, // URL 為空，因為這是一個父選項
+                    Icon = "menu-icon tf-icons bx bx-copy",
+                    SubItems = new List<MenuItem> // 初始化子選項列表
+                    {
+                        new MenuItem // 匯出CSV
+                        {
+                            Title = "匯出CSV",
+                            URL = "/Order/ExportCSV", // 對應的 URL
+                            Icon = "menu-icon tf-icons bx bx-file", // 顯示的圖示 CSS 類別
+                        },
+                        new MenuItem // 匯出PDF
+                        {
+                            Title = "匯出PDF",
+                            URL = "/Order/ExportPDF", // 對應的 URL
+                            Icon = "menu-icon tf-icons bx bx-file", // 顯示的圖示 CSS 類別
+                        },
+                    },
+                },
                 new MenuItem // 個人設定選項，包含子選項
                 {
                     Title = "個人設定",

@@ -138,5 +138,16 @@ namespace WebServer.Services
             // 返回所有的驗證訊息
             return result;
         }
+
+        public IEnumerable<ValidatorMessage> ValidateOrder(Order order, List<OrderDetail> orderDetails)
+        {
+            // 儲存驗證結果的列表
+            var result = new List<ValidatorMessage>();
+
+            // 暫時不做任何驗證，直接返回空的驗證訊息列表
+
+            // 返回所有的驗證訊息
+            return result;
+        }
     }
 }

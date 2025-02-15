@@ -1,0 +1,80 @@
+﻿{
+  "type": "bubble",
+  "hero": {
+    "type": "image",
+    "url": "https://hackmd.io/_uploads/H1fHuJCFkg.png",
+    "size": "full",
+    "aspectRatio": "20:13",
+    "aspectMode": "cover"
+  },
+  "body": {
+    "type": "box",
+    "layout": "vertical",
+    "contents": [
+      {
+        "type": "text",
+        "text": "感謝您的訂購",
+        "weight": "bold",
+        "size": "xl",
+        "color": "#2A5CAA",
+        "align": "center"
+      },
+      {
+        "type": "text",
+        "text": "我們將盡快為您處理！",
+        "weight": "bold",
+        "size": "xl",
+        "color": "#2A5CAA",
+        "align": "center"
+      },
+      {
+        "type": "box",
+        "layout": "vertical",
+        "margin": "lg",
+        "contents": [
+          {
+            "type": "text",
+            "text": "取餐號碼",
+            "align": "center",
+            "color": "#AAAAAA",
+            "size": "sm"
+          },
+          {
+            "type": "text",
+            "text": "{{取餐號碼}}",
+            "align": "center",
+            "weight": "bold",
+            "size": "xxl",
+            "color": "#2A5CAA"
+          }
+        ]
+      }
+    ]
+  },
+  "footer": {
+    "type": "box",
+    "layout": "vertical",
+    "spacing": "sm",
+    "contents": [
+      {
+        "type": "button",
+        "style": "primary",
+        "color": "#2A5CAA",
+        "action": {
+          "type": "uri",
+          "label": "查看訂單詳情",
+          "uri": "{{查看訂單}}"
+        }
+      },
+      {
+        "type": "button",
+        "style": "link",
+        "action": {
+          "type": "uri",
+          "label": "聯繫餐廳",
+          "uri": "tel:+886123456789"
+        }
+      }
+    ]
+  }
+}

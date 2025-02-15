@@ -1,0 +1,166 @@
+﻿@model WebServer.Models.ViewModels.OrderViewModel
+
+@{
+    var controller = ViewContext.RouteData.Values["controller"].ToString();
+    var action = ViewContext.RouteData.Values["action"].ToString();
+}
+
+@section Styles {
+
+}
+
+<div class="container-xxl mt-5">
+    <form role="form" asp-action="@action" asp-route-id="@Model.Order.ID">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="row clearfix">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="body">
+                                <div asp-validation-summary="All" class="text-danger"></div>
+                                <input type="hidden" asp-for="Order.ID" />
+
+                                <div class="form-group row mt-4">
+                                    <label asp-for="Order.OrderDate" class="control-label col-md-2 text-end"></label>
+                                    <div class="col-md-8">
+                                        @if (Model.IsReadonly)
+                                        {
+                                            <input disabled type="date" asp-for="Order.OrderDate" class="form-control" />
+                                        }
+                                        else
+                                        {
+                                            <input type="date" asp-for="Order.OrderDate" class="form-control" />
+                                        }
+                                    </div>
+                                    <div class="col-md-2">
+                                        <span asp-validation-for="Order.OrderDate" class="text-danger"></span>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row mt-4">
+                                    <label asp-for="Order.OrderSeq" class="control-label col-md-2 text-end"></label>
+                                    <div class="col-md-8">
+                                        @if (Model.IsReadonly)
+                                        {
+                                            <input readonly type="text" asp-for="Order.OrderSeq" class="form-control" />
+                                        }
+                                        else
+                                        {
+                                            <input type="text" asp-for="Order.OrderSeq" class="form-control" />
+                                        }
+                                    </div>
+                                    <div class="col-md-2">
+                                        <span asp-validation-for="Order.OrderSeq" class="text-danger"></span>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row mt-4">
+                                    <label asp-for="Order.OrderNo" class="control-label col-md-2 text-end"></label>
+                                    <div class="col-md-8">
+                                        @if (Model.IsReadonly)
+                                        {
+                                            <input readonly type="text" asp-for="Order.OrderNo" class="form-control" />
+                                        }
+                                        else
+                                        {
+                                            <input type="text" asp-for="Order.OrderNo" class="form-control" />
+                                        }
+                                    </div>
+                                    <div class="col-md-2">
+                                        <span asp-validation-for="Order.OrderNo" class="text-danger"></span>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row mt-4">
+                                    <label asp-for="Order.TotalAmount" class="control-label col-md-2 text-end"></label>
+                                    <div class="col-md-8">
+                                        @if (Model.IsReadonly)
+                                        {
+                                            <input readonly type="text" asp-for="Order.TotalAmount" class="form-control" />
+                                        }
+                                        else
+                                        {
+                                            <input type="text" asp-for="Order.TotalAmount" class="form-control" />
+                                        }
+                                    </div>
+                                    <div class="col-md-2">
+                                        <span asp-validation-for="Order.TotalAmount" class="text-danger"></span>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row mt-4">
+                                    <label asp-for="Order.PaymentStatus" class="control-label col-md-2 text-end"></label>
+                                    <div class="col-md-8">
+                                        @if (Model.IsReadonly)
+                                        {
+                                            <input readonly type="text" asp-for="Order.PaymentStatus" class="form-control" />
+                                        }
+                                        else
+                                        {
+                                            <input type="text" asp-for="Order.PaymentStatus" class="form-control" />
+                                        }
+                                    </div>
+                                    <div class="col-md-2">
+                                        <span asp-validation-for="Order.PaymentStatus" class="text-danger"></span>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row mt-4">
+                                    <label asp-for="Order.Remark" class="control-label col-md-2 text-end"></label>
+                                    <div class="col-md-8">
+                                        @if (Model.IsReadonly)
+                                        {
+                                            <textarea readonly asp-for="Order.Remark" class="form-control" rows="4"></textarea>
+                                        }
+                                        else
+                                        {
+                                            <textarea asp-for="Order.Remark" class="form-control" rows="4"></textarea>
+                                        }
+                                    </div>
+                                    <div class="col-md-2">
+                                        <span asp-validation-for="Order.Remark" class="text-danger"></span>
+                                    </div>
+                                </div>
+
+
+                                <div class="table-responsive text-nowrap">
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>產品編號</th>
+                                                <th>產品名稱</th>
+                                                <th>數量</th>
+                                                <th>單價</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="table-border-bottom-0">
+                                            @foreach(var item in Model.OrderDetails){
+                                                <tr>
+                                                    <td>@item.Seq</td>
+                                                    <td>@item.ProductCode</td>
+                                                    <td>@item.ProductName</td>
+                                                    <td>@item.Quantity</td>
+                                                    <td>@item.UnitPrice</td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <div class="d-flex justify-content-center mt-5 mb-5">
+                                    <a class="btn btn-sm btn-secondary ms-5" asp-action="Index">返回</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+
+@section Scripts {
+
+}

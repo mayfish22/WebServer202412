@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
+using System.Reflection;
+using System.Text;
 using System.Text.Json;
 using WebServer.Models.LINEPayModels;
 using WebServer.Models.ViewModels;
@@ -508,18 +510,36 @@ public class CartItemController : Controller
             var linePayRequest = await _webServerDB.LINEPayRequest.Where(s => s.OrderNo.Equals(order.OrderNo)).OrderByDescending(s => s.CreatedDT).FirstOrDefaultAsync();
             var checkPaymentStatusAPIResult = await _linePayService.CheckPaymentStatusAPI(linePayRequest.TransactionId.Value);
 
+
+            // 取得 FlexMessage 範本
+            var filePath = Path.Combine(AppContext.BaseDirectory, $"Resources/OrderConfirmMessage.json");
+            string flexMessage = System.IO.File.ReadAllText(filePath, Encoding.UTF8);  // 預設使用UTF-8編碼
+
+            // 替換範本中的變數
+            flexMessage = flexMessage.Replace("{{取餐號碼}}", order.OrderSeq.ToString());
+            flexMessage = flexMessage.Replace("{{查看訂單}}", $"https://liff.line.me/{LIFFID}");
+            var flexMessageObject = System.Text.Json.JsonSerializer.Deserialize<object>(flexMessage);
+
             switch (checkPaymentStatusAPIResult.Result.ReturnCode)
             {
                 case "0000"://成功
                     order.PaymentStatus = "已付款";
-                    await _lineAPIService.SendMessage(order.LINEUserID, new object[]
-                    {
-                    new {
-                        type = "text",
-                        text = $"感謝您的訂購，我們將盡快為您處理。取餐號碼:{order.OrderSeq}",
-                        notificationDisabled = false,
-                    }
+                    await _lineAPIService.SendMessage(order.LINEUserID, new object[]{
+                        new {
+                            type = "flex",
+                            altText =  "訂單確認",
+                            contents = flexMessageObject,
+                            notificationDisabled = false,
+                        },
                     });
+                    //await _lineAPIService.SendMessage(order.LINEUserID, new object[]
+                    //{
+                    //new {
+                    //    type = "text",
+                    //    text = $"感謝您的訂購，我們將盡快為您處理。取餐號碼:{order.OrderSeq}",
+                    //    notificationDisabled = false,
+                    //}
+                    //});
                     break;
                 case "0110"://授權完成 - 現在可以呼叫Confirm API
                     var confirmAPIResult = await _linePayService.ConfirmAPI(linePayRequest.OrderNo, linePayRequest.TransactionId.Value, new ConfirmAPIRequestBody
@@ -531,14 +551,22 @@ public class CartItemController : Controller
                     {
                         // 此時可去後台查看訂單 https://sandbox-pay.line.me/zh_TW/deal/integrate
                         order.PaymentStatus = "已付款";
-                        await _lineAPIService.SendMessage(order.LINEUserID, new object[]
-                        {
-                        new {
-                            type = "text",
-                            text = $"感謝您的訂購，我們將盡快為您處理。取餐號碼:{order.OrderSeq}",
-                            notificationDisabled = false,
-                        }
+                        await _lineAPIService.SendMessage(order.LINEUserID, new object[]{
+                            new {
+                                type = "flex",
+                                altText =  "訂單確認",
+                                contents = flexMessageObject,
+                                notificationDisabled = false,
+                            },
                         });
+                        //await _lineAPIService.SendMessage(order.LINEUserID, new object[]
+                        //{
+                        //new {
+                        //    type = "text",
+                        //    text = $"感謝您的訂購，我們將盡快為您處理。取餐號碼:{order.OrderSeq}",
+                        //    notificationDisabled = false,
+                        //}
+                        //});
                     }
                     else
                     {
@@ -547,14 +575,22 @@ public class CartItemController : Controller
                     break;
                 case "0123"://付款成功 - 交易已經結束了
                     order.PaymentStatus = "已付款";
-                    await _lineAPIService.SendMessage(order.LINEUserID, new object[]
-                    {
+                    await _lineAPIService.SendMessage(order.LINEUserID, new object[]{
                         new {
-                            type = "text",
-                            text = $"感謝您的訂購，我們將盡快為您處理。取餐號碼:{order.OrderSeq}",
+                            type = "flex",
+                            altText =  "訂單確認",
+                            contents = flexMessageObject,
                             notificationDisabled = false,
-                        }
+                        },
                     });
+                    //await _lineAPIService.SendMessage(order.LINEUserID, new object[]
+                    //{
+                    //    new {
+                    //        type = "text",
+                    //        text = $"感謝您的訂購，我們將盡快為您處理。取餐號碼:{order.OrderSeq}",
+                    //        notificationDisabled = false,
+                    //    }
+                    //});
                     break;
                 default:
                     order.PaymentStatus = checkPaymentStatusAPIResult.Result.Description;
