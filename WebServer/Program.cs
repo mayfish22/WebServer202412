@@ -16,6 +16,9 @@ public class Program
     {
         try
         {
+            // 安裝額外的字碼頁,解決中文亂碼問題
+            System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
+
             // 在這裡放置可能會引發例外的程式碼
             var builder = WebApplication.CreateBuilder(args);
 
