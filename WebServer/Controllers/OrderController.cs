@@ -265,17 +265,19 @@ public class OrderController : Controller
             byte[] fileStream = Array.Empty<byte>();
 
             // 使用 MemoryStream 來寫入 CSV 檔案
-            using var memoryStream = new MemoryStream();
+            using (var memoryStream = new MemoryStream())
+            {
+                // 設定編碼為 Big5（繁體中文編碼）
+                using (var streamWriter = new StreamWriter(memoryStream, Encoding.GetEncoding(950)))
+                using (var csvWriter = new CsvWriter(streamWriter, CultureInfo.InvariantCulture))
+                {
+                    // 寫入客戶資料到 CSV 檔案
+                    csvWriter.WriteRecords(orders);
+                }
 
-            // 設定編碼為 Big5（繁體中文編碼）
-            using var streamWriter = new StreamWriter(memoryStream, Encoding.GetEncoding(950));
-            using var csvWriter = new CsvWriter(streamWriter, CultureInfo.InvariantCulture);
-
-            // 寫入訂單數據到 CSV 檔案
-            csvWriter.WriteRecords(orders);
-
-            // 將 MemoryStream 的內容轉換為 byte 陣列
-            fileStream = memoryStream.ToArray();
+                // 將 MemoryStream 的內容轉換為 byte 陣列
+                fileStream = memoryStream.ToArray();
+            }
 
             // 返回 CSV 檔案作為下載
             return new FileStreamResult(new MemoryStream(fileStream), "application/octet-stream")
